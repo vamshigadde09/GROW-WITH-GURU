@@ -1,0 +1,1008 @@
+import React, { useState, useEffect } from "react";
+
+import "../styles/ProfilePage.css";
+
+import axios from "axios";
+
+import Spinner from "../components/Spinner"; // Ensure correct import
+
+
+
+import StudentHeader from "./Header/StudentHeader";
+
+import Footer from "./Footer/Footer";
+
+
+
+const ProfilePage = () => {
+
+  const [userData, setUserData] = useState(null);
+
+
+
+  useEffect(() => {
+
+    const fetchUserData = async () => {
+
+      const config = {
+
+        headers: {
+
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+
+        },
+
+      };
+
+      try {
+
+        const response = await axios.get(
+
+          "http://localhost:8080/api/users/profile",
+
+          config
+
+        );
+
+        setUserData(response.data);
+
+      } catch (error) {
+
+        console.error("Failed to fetch user data", error);
+
+      }
+
+    };
+
+
+
+    fetchUserData();
+
+  }, []);
+
+
+
+  if (!userData) {
+
+    return (
+
+      <div>
+
+        <Spinner />
+
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+
+          Unable to load user data. Please check your network connection and try
+
+          again.
+
+        </div>
+
+      </div>
+
+    );
+
+  }
+
+
+
+  return (
+
+    <div className="growwithguru-container">
+
+      <StudentHeader />
+
+      <main className="body-box">
+
+        <section className="intro-section">
+
+          <h1>Welcome to GROW WITH GURU - Your Path to Interview Success</h1>
+
+        </section>
+
+        <section className="profile-details-section">
+
+          <div className="profile-details">
+
+            <div className="profile-photo">
+
+              <img
+
+                src={userData.documents.photo}
+
+                alt="Profile Photo"
+
+                className="photo"
+
+              />
+
+            </div>
+
+            <div className="details-container">
+
+              <div className="personal-details">
+
+                {[
+
+                  ["NAME", userData.personalDetails.name],
+
+                  ["EMAIL ID", userData.personalDetails.email],
+
+                  ["REGISTER NO", userData.personalDetails.registerNo],
+
+                  ["DEPARTMENT", userData.personalDetails.department],
+
+                  ["COLLEGE", userData.personalDetails.college],
+
+                  ["PROGRAM", userData.personalDetails.program],
+
+                  ["SPECIALIZATION", userData.personalDetails.specialization],
+
+                  ["EDUCATION", userData.personalDetails.education],
+
+                  ["SECTION", userData.personalDetails.section],
+
+                ].map(([label, value], index) => (
+
+                  <div className="profile-row" key={index}>
+
+                    <div className="label">{label}:</div>
+
+                    <div className="value">{value}</div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+              <div className="professional-details">
+
+                {[
+
+                  ["SKILLS", userData.professionalDetails.skills],
+
+                  ["AREA OF INTEREST", userData.professionalDetails.interests],
+
+                  ["PROGRAM", userData.professionalDetails.program],
+
+                  ["LANGUAGES", userData.professionalDetails.languages],
+
+                ].map(([label, value], index) => (
+
+                  <div className="profile-row" key={index}>
+
+                    <div className="label">{label}:</div>
+
+                    <div className="value">{value}</div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <Footer />
+
+    </div>
+
+  );
+
+};
+
+
+
+export default ProfilePage;
+
+import { createSlice } from "@reduxjs/toolkit";
+
+
+
+export const alertSlice = createSlice({
+
+  name: "alerts",
+
+  initialState: {
+
+    loading: false,
+
+  },
+
+  reducers: {
+
+    showLoading: (state) => {
+
+      state.loading = true;
+
+    },
+
+    hideLoading: (state) => {
+
+      state.loading = false;
+
+    },
+
+  },
+
+});
+
+
+
+export const { showLoading, hideLoading } = alertSlice.actions;
+
+import { createSlice } from "@reduxjs/toolkit";
+
+
+
+export const userSlice = createSlice({
+
+  name: "user",
+
+  initialState: {
+
+    user: null,
+
+  },
+
+  reducers: {
+
+    setUser: (state, action) => {
+
+      state.user = action.payload;
+
+    },
+
+  },
+
+});
+
+
+
+export const { setUser } = userSlice.actions;
+
+import { configureStore } from "@reduxjs/toolkit";
+
+import { alertSlice } from "./features/alertSlice";
+
+import { userSlice } from "./features/userSlice";
+
+
+
+export default configureStore({
+
+  reducer: {
+
+    alerts: alertSlice.reducer,
+
+    user: userSlice.reducer,
+
+  },
+
+});
+
+const Student = require("../models/studentModel");
+
+
+
+exports.saveStudent = async (req, res) => {
+
+  try {
+
+    const student = new Student(req.body);
+
+    await student.save();
+
+    res.status(201).send(student);
+
+  } catch (error) {
+
+    res.status(500).send({ error: error.message });
+
+  }
+
+};
+
+
+
+exports.getStudent = async (req, res) => {
+
+  try {
+
+    const student = await Student.findById(req.params.id);
+
+    if (!student) {
+
+      return res.status(404).send();
+
+    }
+
+    res.send(student);
+
+  } catch (error) {
+
+    res.status(500).send();
+
+  }
+
+};
+
+const userModel = require("../models/userModels");
+
+const bcrypt = require("bcryptjs");
+
+const jwt = require("jsonwebtoken");
+
+
+
+//register callback
+
+const registerController = async (req, res) => {
+
+  try {
+
+    const existingUser = await userModel.findOne({ email: req.body.email });
+
+    if (existingUser) {
+
+      return res
+
+        .status(200)
+
+        .send({ message: "User Already Exists", success: false });
+
+    }
+
+    const password = req.body.password;
+
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    req.body.password = hashedPassword;
+
+    const newUser = new userModel(req.body);
+
+    await newUser.save();
+
+    res.status(201).send({ message: "Registered Successfully", success: true });
+
+  } catch (error) {
+
+    console.error("Register Controller Error:", error);
+
+    res.status(500).send({
+
+      success: false,
+
+      message: `Register Controller ${error.message}`,
+
+    });
+
+  }
+
+};
+
+
+
+// login callback
+
+const loginController = async (req, res) => {
+
+  try {
+
+    const user = await userModel.findOne({ email: req.body.email });
+
+    if (!user) {
+
+      return res
+
+        .status(200)
+
+        .send({ message: "User Not Found", success: false });
+
+    }
+
+    const isMatch = await bcrypt.compare(req.body.password, user.password);
+
+    if (!isMatch) {
+
+      return res
+
+        .status(200)
+
+        .send({ message: "Invalid Email or Password", success: false });
+
+    }
+
+    const token = jwt.sign(
+
+      { id: user._id, role: user.role },
+
+      process.env.JWT_SECRET,
+
+      {
+
+        expiresIn: "1d",
+
+      }
+
+    );
+
+    res.status(200).send({
+
+      message: "Login Successful",
+
+      success: true,
+
+      token,
+
+      role: user.role,
+
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res
+
+      .status(500)
+
+      .send({ message: `Error in Login Controller ${error.message}` });
+
+  }
+
+};
+
+
+
+const authController = async (req, res) => {
+
+  try {
+
+    const user = await userModel.findOne({ _id: req.body.userId });
+
+    if (!user) {
+
+      return res.status(200).send({
+
+        message: "user not found",
+
+        success: false,
+
+      });
+
+    } else {
+
+      res.status(200).send({
+
+        success: true,
+
+        data: {
+
+          name: user.name,
+
+          email: user.email,
+
+        },
+
+      });
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).send({
+
+      message: "auth error",
+
+      success: false,
+
+      error,
+
+    });
+
+  }
+
+};
+
+
+
+exports.getProfile = async (req, res) => {
+
+  try {
+
+    const userId = req.user.id; // Assuming user id is stored in req.user by the authMiddleware
+
+    const user = await User.findById(userId);
+
+
+
+    if (!user) {
+
+      return res.status(404).send({ message: "User not found" });
+
+    }
+
+
+
+    res.status(200).send(user);
+
+  } catch (error) {
+
+    console.error("Error fetching user profile:", error);
+
+    res.status(500).send({ message: "Internal server error" });
+
+  }
+
+};
+
+
+
+module.exports = { loginController, registerController, authController };
+
+const jwt = require("jsonwebtoken");
+
+
+
+module.exports = (req, res, next) => {
+
+  const authHeader = req.headers["authorization"];
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+
+    return res.status(401).json({
+
+      message: "Auth Failed: No token provided",
+
+      success: false,
+
+    });
+
+  }
+
+
+
+  const token = authHeader.split(" ")[1];
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+
+    if (err) {
+
+      return res.status(401).json({
+
+        message: `Auth Failed: ${err.message}`,
+
+        success: false,
+
+      });
+
+    }
+
+    req.user = { id: decoded.id };
+
+    next();
+
+  });
+
+};
+
+const mongoose = require("mongoose");
+
+
+
+const studentSchema = new mongoose.Schema({
+
+  userId: mongoose.Schema.Types.ObjectId, // Reference to the User model
+
+
+
+  personalDetails: {
+
+    name: String,
+
+    email: String,
+
+    registerNumber: String,
+
+    department: String,
+
+    college: String,
+
+    program: String,
+
+    specialization: String,
+
+    education: String,
+
+    section: String,
+
+  },
+
+  professionalDetails: {
+
+    skills: String,
+
+    areaOfInterest: String,
+
+    languages: [String],
+
+  },
+
+  documents: {
+
+    photo: String, // Storing file paths or URLs
+
+    resume: String,
+
+    cv: String,
+
+  },
+
+});
+
+
+
+const Student = mongoose.model("Student", studentSchema);
+
+
+
+module.exports = Student;
+
+const mongoose = require("mongoose");
+
+
+
+const userSchema = new mongoose.Schema({
+
+  name: {
+
+    type: String,
+
+    required: [true, "Name is required"],
+
+  },
+
+  email: {
+
+    type: String,
+
+    required: [true, "Email is required"],
+
+  },
+
+  role: {
+
+    type: String,
+
+    enum: ["Teacher", "Student"],
+
+    required: [true, "Role is required"],
+
+  },
+
+  password: {
+
+    type: String,
+
+    required: [true, "Password is required"],
+
+  },
+
+});
+
+
+
+const userModel = mongoose.model("users", userSchema);
+
+
+
+module.exports = userModel;
+
+const express = require("express");
+
+const router = express.Router();
+
+const Student = require("../models/studentModel"); // Ensure the path is correct
+
+const multer = require("multer");
+
+const upload = multer({ dest: "uploads/" });
+
+
+
+// Middleware for JSON body parsing
+
+router.use(express.json());
+
+
+
+const handleErrors = (error, res) => {
+
+  console.error("Error: ", error);
+
+  res.status(500).send({ message: "Server error", error: error.message });
+
+};
+
+
+
+router.post(
+
+  "/",
+
+  upload.fields([{ name: "photo" }, { name: "resume" }, { name: "cv" }]),
+
+  async (req, res) => {
+
+    try {
+
+      console.log("Received body: ", req.body);
+
+      console.log("Received files: ", req.files);
+
+
+
+      const newStudent = new Student({
+
+        personalDetails: req.body.personalDetails,
+
+        professionalDetails: req.body.professionalDetails,
+
+        documents: {
+
+          photo: req.files.photo ? req.files.photo[0].path : "",
+
+          resume: req.files.resume ? req.files.resume[0].path : "",
+
+          cv: req.files.cv ? req.files.cv[0].path : "",
+
+        },
+
+      });
+
+
+
+      await newStudent.save();
+
+      res.status(201).send(newStudent);
+
+    } catch (error) {
+
+      console.error("Error saving student: ", error);
+
+      res.status(500).send({ message: "Server error", error: error.message });
+
+    }
+
+  }
+
+);
+
+
+
+router.get("/", async (req, res) => {
+
+  try {
+
+    // Simulate fetching data from a database
+
+    const studentsData = await Student.find();
+
+    res.json(studentsData);
+
+  } catch (error) {
+
+    console.error("Failed to fetch students", error);
+
+    res.status(500).send("Failed to fetch students");
+
+  }
+
+});
+
+module.exports = router;
+
+const express = require("express");
+
+const {
+
+  loginController,
+
+  registerController,
+
+  authController,
+
+} = require("../controllers/userCtrl");
+
+const authMiddleware = require("../middlewares/authMiddleware");
+
+
+
+//router onject
+
+const router = express.Router();
+
+
+
+//routes
+
+//LOGIN || POST
+
+router.post("/login", loginController);
+
+
+
+//REGISTER || POST
+
+router.post("/register", registerController);
+
+
+
+//Auth || POST
+
+router.post("/getUserData", authMiddleware, authController);
+
+
+
+router.get("/profile", authMiddleware, async (req, res) => {
+
+  try {
+
+    const userId = req.user.id; // Assuming user ID is attached to req.user by authMiddleware
+
+    const user = await Student.findById(userId);
+
+    if (!user) {
+
+      return res.status(404).send({ message: "User not found" });
+
+    }
+
+    res.send(user);
+
+  } catch (error) {
+
+    console.error("Failed to fetch user data", error);
+
+    res.status(500).send({ message: "Server error", error: error.message });
+
+  }
+
+});
+
+module.exports = router;
+
+PORT =8080
+
+NODE_MODE = development
+
+MONGO_URL = mongodb://localhost:27017/growwithguru
+
+JWT_SECRET = XYZGHSJ123
+
+const express = require("express");
+
+const colors = require("colors");
+
+const morgan = require("morgan");
+
+const dotenv = require("dotenv");
+
+const connectDB = require("./config/db");
+
+const cors = require("cors");
+
+
+
+//dotenv conig
+
+dotenv.config();
+
+
+
+//mongodb connection
+
+connectDB();
+
+
+
+//rest obejct
+
+const app = express();
+
+
+
+//middlewares
+
+app.use(express.json());
+
+app.use(morgan("dev"));
+
+app.use(cors()); // This will enable all CORS requests
+
+
+
+//routes
+
+app.use("/api/v1/user", require("./routes/userRoutes"));
+
+app.use("/api/v1/students", require("./routes/studentRoutes"));
+
+
+
+app.post("/api/students", async (req, res) => {
+
+  try {
+
+    const newStudent = new Student(req.body);
+
+    await newStudent.save();
+
+    res.status(201).send(newStudent);
+
+  } catch (error) {
+
+    console.error("Failed to save student", error);
+
+    res.status(500).send({ message: "Failed to save student data" });
+
+  }
+
+});
+
+
+
+app.use((req, res, next) => {
+
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+
+  next();
+
+});
+
+
+
+app.use(
+
+  cors({
+
+    origin: "http://localhost:3000", // allow only requests from this origin
+
+  })
+
+);
+
+
+
+//port
+
+const port = process.env.PORT || 8080;
+
+//listen port
+
+app.listen(port, () => {
+
+  console.log(
+
+    `Server Running in ${process.env.NODE_MODE} Mode on port ${process.env.PORT}`
+
+      .bgCyan.white
+
+  );
+
+});
+
+
+
