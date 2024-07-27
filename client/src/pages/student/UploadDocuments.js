@@ -1,12 +1,14 @@
 import React from "react";
 import "../../styles/StudentForm.css";
+
 const UploadDocuments = ({
   handleSubmit,
   prevStep,
   handleChange,
   formData,
+  error,
 }) => {
-  const isReadyToSubmit = formData.photo && formData.resume && formData.cv; // Ensure all documents are uploaded
+  const isReadyToSubmit = formData.photo && formData.resume && formData.cv;
 
   return (
     <div className="form-container">
@@ -39,10 +41,12 @@ const UploadDocuments = ({
           />
         </div>
       </div>
+      {error && <p className="error">{error}</p>}
       <div className="button-group">
         <button onClick={prevStep}>Back</button>
-        {/* Utilize the isReadyToSubmit prop to enable/disable the submit button */}
-        <button onClick={handleSubmit}>Submit</button>
+        <button onClick={handleSubmit} disabled={!isReadyToSubmit}>
+          Submit
+        </button>
       </div>
     </div>
   );

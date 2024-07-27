@@ -45,15 +45,15 @@ const loginController = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      }
+      { expiresIn: "1d" }
     );
+
     res.status(200).send({
       message: "Login Successful",
       success: true,
       token,
       role: user.role,
+      formfilled: user.formfilled, // Add this line
     });
   } catch (error) {
     console.log(error);
@@ -65,21 +65,21 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
   try {
-    const user = await userModel.findOne({ _id: req.body.userId });
+    const user = await userModel.findById(req.user.id);
     if (!user) {
       return res.status(200).send({
         message: "user not found",
         success: false,
       });
-    } else {
-      res.status(200).send({
-        success: true,
-        data: {
-          name: user.name,
-          email: user.email,
-        },
-      });
     }
+    res.status(200).send({
+      success: true,
+      data: {
+        name: user.name,
+        email: user.email,
+        formfilled: user.formfilled, // Ensure this is returned
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -106,4 +106,23 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-module.exports = { loginController, registerController, authController };
+const updateFormfilledController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await userModel.findByIdAndUpdate(userId, { formfilled: true });
+    res.status(200).send({
+      success: true,
+      message: "Formfilled status updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating formfilled status:", error);
+    res.status(500).send({ success: false, message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  loginController,
+  registerController,
+  authController,
+  updateFormfilledController,
+};

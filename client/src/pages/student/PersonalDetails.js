@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/StudentForm.css";
 
-const PersonalDetails = ({ nextStep, handleChange, formData = {} }) => {
+const PersonalDetails = ({ nextStep, handleChange, formData = {}, error }) => {
   const {
     name = "",
     email = "",
@@ -67,14 +67,13 @@ const PersonalDetails = ({ nextStep, handleChange, formData = {} }) => {
             onChange={(e) =>
               handleChange("personalDetails", "department", e.target.value)
             }
-            className="form-control" // Add a class for consistent styling
+            className="form-control"
           >
             <option value="">select department</option>
             <option value="DSBS">DSBS</option>
             <option value="CINTAL">CINTAL</option>
           </select>
         </div>
-
         <div>
           <label>College:</label>
           <input
@@ -131,6 +130,7 @@ const PersonalDetails = ({ nextStep, handleChange, formData = {} }) => {
           />
         </div>
       </div>
+      {error && <p className="error">{error}</p>}
       <div className="button-group">
         <button className="button" onClick={onNext}>
           Next

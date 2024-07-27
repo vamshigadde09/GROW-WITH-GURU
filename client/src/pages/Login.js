@@ -16,47 +16,28 @@ const Login = () => {
       const res = await axios.post("/api/v1/user/login", values);
       dispatch(hideLoading());
 
-      console.log("API Response: ", res.data);
-
       if (res.data.success) {
         localStorage.setItem("token", res.data.token);
         message.success("Login Successfully");
 
-        const teacherFormCompleted = localStorage.getItem(
-          "teacherFormCompleted"
-        );
-        const studentFormCompleted = localStorage.getItem(
-          "studentFormCompleted"
-        );
-
-        console.log("Role: ", res.data.role);
-        console.log("Teacher Form Completed: ", teacherFormCompleted);
-        console.log("Student Form Completed: ", studentFormCompleted);
-
-        if (res.data.role === "Teacher") {
-          console.log("Teacher role identified");
-          if (!teacherFormCompleted) {
-            console.log("Redirecting to /teacherForm");
-            navigate("/teacherForm");
-          } else {
-            console.log("Redirecting to /teacherPortal");
-            navigate("/teacherPortal");
-          }
-        } else if (res.data.role === "Student") {
-          if (!studentFormCompleted) {
+        // Check the formfilled status from the response
+        if (res.data.role === "Student") {
+          if (!res.data.formfilled) {
             navigate("/StudentForm");
           } else {
             navigate("/StudentPortal");
           }
+        } else if (res.data.role === "Teacher") {
+          // Add similar logic for Teacher if needed
+          navigate("/TeacherPortal");
         } else {
-          navigate("/");
+          navigate("/TeacherForm");
         }
       } else {
         message.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
-      console.error("Something went wrong", error);
       message.error(
         "Login failed: " + (error.response?.data?.message || "Unknown error")
       );

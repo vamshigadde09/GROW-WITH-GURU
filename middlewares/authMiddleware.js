@@ -1,23 +1,19 @@
 const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModels");
 
-module.exports = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      message: "Auth Failed: No token provided",
-      success: false,
-    });
+const authMiddleware = async (req, res, next) => {
+  const token = req.header("Authorization").replace("Bearer ", "");
+  if (!token) {
+    return res.status(401).send({ message: "Authentication required" });
   }
 
-  const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({
-        message: `Auth Failed: ${err.message}`,
-        success: false,
-      });
-    }
-    req.user = { id: decoded.id };
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
-  });
+  } catch (error) {
+    res.status(401).send({ message: "Invalid token" });
+  }
 };
+
+module.exports = authMiddleware;

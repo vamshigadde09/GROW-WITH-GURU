@@ -18,8 +18,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is required"],
   },
+  formfilled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const userModel = mongoose.model("users", userSchema);
+const userModel = mongoose.model("User", userSchema);
 
 module.exports = userModel;

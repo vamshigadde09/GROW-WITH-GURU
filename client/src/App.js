@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router, // Correct import
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,19 +17,19 @@ import PersonalDetails from "./pages/student/PersonalDetails";
 import StudentForm from "./pages/student/StudentForm";
 import ProfessionalDetails from "./pages/student/ProfessionalDetails";
 import UploadDocuments from "./pages/student/UploadDocuments";
-import ProfilePage from "./pages/student/ProfilePage";
 import TeacherForm from "./pages/teacher/TeacherForm";
 import TPersonalDetails from "./pages/teacher/TPersonalDetails";
 import TProfessionalDetails from "./pages/teacher/TProfessionalDetails";
 import ApplyForInterview from "./pages/student/ApplyForInterview";
 import TeacherPortal from "./pages/teacher/TeacherPortal";
+import ProfilePage from "./pages/student/ProfilePage";
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
 
   return (
     <>
-      <BrowserRouter>
+      <Router>
         {loading ? (
           <Spinner />
         ) : (
@@ -61,7 +66,7 @@ function App() {
                   <StudentForm />
                 </ProtectedRoutes>
               }
-            />
+            />{" "}
             <Route
               path="/PersonalDetails/*"
               element={
@@ -112,7 +117,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         )}
-      </BrowserRouter>
+      </Router>
     </>
   );
 }

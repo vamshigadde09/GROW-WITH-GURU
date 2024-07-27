@@ -6,6 +6,7 @@ const ProfessionalDetails = ({
   prevStep,
   handleChange,
   formData = {},
+  error,
 }) => {
   const {
     skills = "",
@@ -20,6 +21,13 @@ const ProfessionalDetails = ({
 
   const onBack = () => {
     prevStep();
+  };
+
+  const handleCheckboxChange = (language) => {
+    const updatedLanguages = languages.includes(language)
+      ? languages.filter((lang) => lang !== language)
+      : [...languages, language];
+    handleChange("professionalDetails", "languages", updatedLanguages);
   };
 
   return (
@@ -74,9 +82,7 @@ const ProfessionalDetails = ({
             <input
               type="checkbox"
               checked={languages.includes("Python")}
-              onChange={(e) =>
-                handleChange("professionalDetails", "languages", "Python")
-              }
+              onChange={() => handleCheckboxChange("Python")}
             />
             <label>Python</label>
           </div>
@@ -84,9 +90,7 @@ const ProfessionalDetails = ({
             <input
               type="checkbox"
               checked={languages.includes("Java")}
-              onChange={(e) =>
-                handleChange("professionalDetails", "languages", "Java")
-              }
+              onChange={() => handleCheckboxChange("Java")}
             />
             <label>Java</label>
           </div>
@@ -94,9 +98,7 @@ const ProfessionalDetails = ({
             <input
               type="checkbox"
               checked={languages.includes("C")}
-              onChange={(e) =>
-                handleChange("professionalDetails", "languages", "C")
-              }
+              onChange={() => handleCheckboxChange("C")}
             />
             <label>C</label>
           </div>
@@ -104,14 +106,13 @@ const ProfessionalDetails = ({
             <input
               type="checkbox"
               checked={languages.includes("C++")}
-              onChange={(e) =>
-                handleChange("professionalDetails", "languages", "C++")
-              }
+              onChange={() => handleCheckboxChange("C++")}
             />
             <label>C++</label>
           </div>
         </div>
       </div>
+      {error && <p className="error">{error}</p>}
       <div className="button-group">
         <button onClick={onBack}>Back</button>
         <button onClick={onNext}>Next</button>

@@ -1,69 +1,55 @@
-import React, { useState, useEffect } from "react";
-import PersonalDetails from ".//PersonalDetails";
-import ProfessionalDetails from ".//ProfessionalDetails";
-import UploadDocuments from ".//UploadDocuments";
+import React, { useState } from "react";
+import PersonalDetails from "./PersonalDetails";
+import ProfessionalDetails from "./ProfessionalDetails";
+import UploadDocuments from "./UploadDocuments";
 import axios from "axios";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StudentForm = () => {
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
-
   const [formData, setFormData] = useState({
-    personalDetails: {},
-    professionalDetails: {},
-    documents: {},
+    personalDetails: {
+      name: "",
+      email: "",
+      registerNumber: "",
+      department: "",
+      college: "",
+      program: "",
+      specialization: "",
+      education: "",
+      section: "",
+    },
+    professionalDetails: {
+      skills: "",
+      areaOfInterest: "",
+      languages: [],
+    },
+    documents: {
+      photo: null,
+      resume: null,
+      cv: null,
+    },
   });
-  const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+
   const navigate = useNavigate();
 
-  // Check if the form has already been submitted by this user
-  useEffect(() => {
-    const formCompleted = localStorage.getItem("formCompleted");
-    if (formCompleted) {
-      navigate("/StudentPortal"); // Redirect if the form has already been submitted
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    if (formSubmitted) {
-      navigate("/StudentPortal");
-    }
-  }, [formSubmitted, navigate]);
-
-  const handlePrevStep = () => {
-    setStep(step - 1);
-  };
-
-  const handleNextStep = () => {
-    setStep(step + 1);
-  };
-
   const handleChange = (section, key, value) => {
-    setFormData({
-      ...formData,
-      [section]: { ...formData[section], [key]: value },
-    });
-  };
-
-  const handleFileChange = (name, file) => {
-    const newDocuments = { ...formData.documents, [name]: file };
-    setFormData({
-      ...formData,
-      documents: newDocuments,
-    });
-    setIsReadyToSubmit(
-      newDocuments.photo && newDocuments.resume && newDocuments.cv
-    );
+    setFormData((prevState) => ({
+      ...prevState,
+      [section]: {
+        ...prevState[section],
+        [key]: value,
+      },
+    }));
   };
 
   const handleSubmit = async () => {
-    setError(""); // Clear previous errors
+    setError("");
 
-    const { photo, resume, cv } = formData.documents ?? {};
+    const { photo, resume, cv } = formData.documents;
     if (!photo || !resume || !cv) {
-      console.error("Required documents are not uploaded");
+      setError("Required documents are not uploaded");
       return;
     }
 
@@ -73,57 +59,110 @@ const StudentForm = () => {
     formDataToSend.append("cv", cv);
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:8080/api/v1/students",
         formDataToSend,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log("Form submitted successfully", response.data);
-      localStorage.setItem("formCompleted", "true"); // Mark the form as completed in local storage
-      setFormSubmitted(true);
+
+      await axios.patch(
+        "http://localhost:8080/api/v1/user/formfilled",
+        { formfilled: true },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      navigate("/StudentPortal");
     } catch (error) {
       console.error("Error submitting form", error);
+      setError("There was an error submitting the form. Please try again.");
     }
   };
 
-  // Check if the user should be allowed to fill the form
-  if (localStorage.getItem("formCompleted")) {
-    return <Navigate to="/StudentPortal" />; // Use Navigate for a cleaner redirect
-  }
-  {
-    error && <p style={{ color: "red" }}>{error}</p>;
-  }
+  const validatePersonalDetails = () => {
+    const {
+      name,
+      email,
+      registerNumber,
+      department,
+      college,
+      program,
+      specialization,
+      education,
+      section,
+    } = formData.personalDetails;
+    return (
+      name &&
+      email &&
+      registerNumber &&
+      department &&
+      college &&
+      program &&
+      specialization &&
+      education &&
+      section
+    );
+  };
+
+  const validateProfessionalDetails = () => {
+    const { skills, areaOfInterest, languages } = formData.professionalDetails;
+    return skills && areaOfInterest && languages.length > 0;
+  };
+
+  const nextStep = () => {
+    if (step === 1 && !validatePersonalDetails()) {
+      setError("All personal details fields are mandatory.");
+      return;
+    }
+    if (step === 2 && !validateProfessionalDetails()) {
+      setError("All professional details fields are mandatory.");
+      return;
+    }
+    setError("");
+    setStep(step + 1);
+  };
+
+  const prevStep = () => {
+    setStep(step - 1);
+  };
 
   switch (step) {
     case 1:
       return (
         <PersonalDetails
-          nextStep={handleNextStep}
+          nextStep={nextStep}
           handleChange={handleChange}
           formData={formData.personalDetails}
+          error={error}
         />
       );
     case 2:
       return (
         <ProfessionalDetails
-          prevStep={handlePrevStep}
-          nextStep={handleNextStep}
+          prevStep={prevStep}
+          nextStep={nextStep}
           handleChange={handleChange}
           formData={formData.professionalDetails}
+          error={error}
         />
       );
     case 3:
       return (
         <UploadDocuments
-          formData={formData}
-          handleChange={handleFileChange}
+          formData={formData.documents}
+          handleChange={(key, value) => handleChange("documents", key, value)}
           handleSubmit={handleSubmit}
-          prevStep={handlePrevStep}
-          isReadyToSubmit={isReadyToSubmit}
+          prevStep={prevStep}
+          error={error}
         />
       );
     default:
