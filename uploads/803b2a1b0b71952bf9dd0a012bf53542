@@ -1,0 +1,119 @@
+/* StudentForm.css */
+
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  justify-content: flex-start; /* Align items from top to bottom */
+  width: 100%;
+  height: 300%;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Ensure full width */
+  margin-bottom: 20px;
+}
+
+.step-indicator > div {
+  flex: 1;
+  height: 5px;
+  background: #e0e0e0;
+  margin: 0 5px;
+  border-radius: 5px;
+}
+
+.step-indicator > .active {
+  background: #007bff;
+}
+
+.form-box {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: flex-start; /* Align items from left to right */
+  width: calc(100% - 12px); /* Adjust width to match other inputs */
+  max-width: 600px; /* Adjust as needed */
+  border: 1px solid #f0f0f0;
+  font-size: 14px;
+  margin-top: 5px;
+
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+}
+
+.form-box div {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: flex-start; /* Align items from left to right */
+  width: 100%; /* Ensure full width */
+  margin-bottom: 15px;
+}
+
+.form-box label {
+  margin-bottom: 5px; /* Adjust as needed */
+  font-weight: bold;
+  color: #333;
+}
+
+.form-box input[type="text"],
+.form-box input[type="email"],
+.form-box input[type="file"] {
+  width: calc(100% - 10px); /* Adjust to leave space for the border */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px; /* Adjust spacing between inputs */
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-group label {
+  margin-right: 10px;
+}
+
+.button-group {
+  width: 100%; /* Ensure full width */
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  justify-content: space-between;
+}
+
+.button-group button {
+  padding: 10px 30px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+  
+}
+
+.button-group button:hover {
+  background: #0056b3;
+}

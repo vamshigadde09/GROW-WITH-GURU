@@ -1,0 +1,120 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+
+  }
+  
+  .growwithguru-container {
+    font-family: Arial, sans-serif;
+    margin: 0 auto; /* Centered margin */
+    max-width: auto; /* Maximum width */
+}
+  
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  justify-content: flex-start; /* Align items from top to bottom */
+  margin: 20px 20px;
+  padding: 20px;
+  max-width: 98.2%; /* Maximum width */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+  
+.form-box {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: flex-start; /* Align items from left to right */
+  width: calc(100% - 12px); /* Adjust width to match other inputs */
+  max-width: 600px; /* Adjust as needed */
+  border: 1px solid #f0f0f0;
+  font-size: 14px;
+  margin-top: 5px;
+
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+}
+  
+  .form-box div {
+    display: flex;
+    flex-direction: column; /* Arrange items vertically */
+    align-items: flex-start; /* Align items from left to right */
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .form-box label {
+    margin-bottom: 5px; /* Adjust as needed */
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .form-box input[type="text"],
+  .form-box input[type="email"],
+  .form-box input[type="file"],
+  .form-box textarea {
+    width: calc(100% - 20px); /* Adjust to leave space for the border */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px; /* Adjust spacing between inputs */
+  }
+  
+  .button-group {
+    width: 100%; /* Ensure full width */
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .button-group button {
+    padding: 10px 20px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+  }
+  
+  .button-group button:hover {
+    background: #0056b3;
+  }
+  
+  .faq-section {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .faq-section h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .faq-section dl {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .faq-section dt {
+    font-weight: bold;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  .faq-section dd {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    color: #777;
+  }
+  
