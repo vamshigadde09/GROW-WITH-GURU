@@ -6,6 +6,7 @@ import Footer from "../Footer/Footer";
 
 const StudentPortal = () => {
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId"); // Get userId from local storage or use Redux state
 
   const handleLogout = () => {
     // Clear user token and other local data
@@ -16,7 +17,7 @@ const StudentPortal = () => {
 
   return (
     <div className="growwithguru-container">
-      <StudentHeader />
+      <StudentHeader userId={userId} />
       <div className="body-box">
         <section className="intro-section">
           <h1>Welcome to GROW WITH GURU - Your Path to Interview Success</h1>

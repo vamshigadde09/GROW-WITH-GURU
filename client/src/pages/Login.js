@@ -3,6 +3,7 @@ import "../styles/RegiserStyles.css";
 import { Form, Input, message } from "antd";
 import { useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import { setUser } from "../redux/features/userSlice"; // Import setUser action
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -19,6 +20,8 @@ const Login = () => {
       if (res.data.success) {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.role);
+        localStorage.setItem("userId", res.data.userId); // Store userId in local storage
+        dispatch(setUser({ id: res.data.userId, role: res.data.role })); // Set user in Redux state
         message.success("Login Successfully");
 
         // Check the formfilled status from the response

@@ -3,7 +3,7 @@ const {
   loginController,
   registerController,
   authController,
-  updateFormfilledController, // Add this line
+  updateFormfilledController,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -12,6 +12,6 @@ const router = express.Router();
 router.post("/login", loginController);
 router.post("/register", registerController);
 router.post("/getUserData", authMiddleware, authController);
-router.patch("/formfilled", authMiddleware, updateFormfilledController); // Add this line
+router.patch("/formfilled", authMiddleware, updateFormfilledController);
 
 module.exports = router;

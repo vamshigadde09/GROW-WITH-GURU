@@ -50,10 +50,8 @@ const TeacherForm = () => {
 
   const handleSubmit = async () => {
     setError("");
-
     try {
       const token = localStorage.getItem("token");
-
       const response = await axios.post(
         "http://localhost:8080/api/v1/teachers",
         formData,

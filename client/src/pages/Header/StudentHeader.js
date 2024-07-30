@@ -1,15 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./StudentHeader.css"; // Make sure this path is correct.
+import "./StudentHeader.css";
 
-const StudentHeader = () => {
-  const navigate = useNavigate(); // Correct use of useNavigate
+const StudentHeader = ({ userId }) => {
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear user token and other local data
     localStorage.removeItem("token");
-    localStorage.removeItem("formCompleted"); // Optional: Clear this if you want to reset form status on logout
-    navigate("/"); // Redirect to login page after logout
+    localStorage.removeItem("formCompleted");
+    navigate("/");
   };
 
   return (
@@ -22,14 +21,13 @@ const StudentHeader = () => {
           <a href="/ApplyForInterview" className="nav-link">
             Schedule Interview
           </a>
-
           <a href="/feedback" className="nav-link">
             Feedback
           </a>
           <a href="/updates" className="nav-link">
             Updates
           </a>
-          <a href="/ProfilePage" className="nav-link">
+          <a href={`/profile/${userId}`} className="nav-link">
             Profile
           </a>
           <button onClick={handleLogout} className="nav-link btn">

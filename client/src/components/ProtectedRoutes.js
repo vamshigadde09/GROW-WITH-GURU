@@ -2,12 +2,42 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./Spinner";
-
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/features/userSlice"; // Import setUser action
 const ProtectedRoutes = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [formCompleted, setFormCompleted] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  //eslint-disable-next-line
+  const getUser = async () => {
+    try {
+      dispatch(showLoading());
+      const res = await axios.post(
+        "/api/v1/user/getUserData",
+        { token: localStorage.getItem("token") },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      dispatch(hideLoading());
+      if (res.data.success) {
+        dispatch(setUser(res.data.data));
+      } else {
+        localStorage.clear();
+        <Navigate to="/login" />;
+      }
+    } catch (error) {
+      localStorage.clear();
+      dispatch(hideLoading());
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -43,7 +73,7 @@ const ProtectedRoutes = ({ children }) => {
     };
 
     checkAuth();
-  }, []);
+  }, [getUser]);
 
   if (loading) {
     return <Spinner />;

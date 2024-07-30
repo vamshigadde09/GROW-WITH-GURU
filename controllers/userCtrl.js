@@ -1,6 +1,7 @@
 const userModel = require("../models/userModels");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Student = require("../models/studentModel");
 
 //register callback
 const registerController = async (req, res) => {
@@ -52,6 +53,7 @@ const loginController = async (req, res) => {
       message: "Login Successful",
       success: true,
       token,
+      userId: user._id,
       role: user.role,
       formfilled: user.formfilled, // Add this line
     });
@@ -77,7 +79,20 @@ const authController = async (req, res) => {
       data: {
         name: user.name,
         email: user.email,
+        role: user.role,
         formfilled: user.formfilled, // Ensure this is returned
+        registerNumber: Student.registerNumber,
+        department: Student.department,
+        college: Student.college,
+        program: Student.program,
+        specialization: Student.specialization,
+        education: Student.education,
+        section: Student.section,
+        skills: Student.skills,
+        areaOfInterest: Student.areaOfInterest,
+        photo: Student.photo,
+        resume: Student.resume,
+        cv: Student.cv,
       },
     });
   } catch (error) {
@@ -87,22 +102,6 @@ const authController = async (req, res) => {
       success: false,
       error,
     });
-  }
-};
-
-exports.getProfile = async (req, res) => {
-  try {
-    const userId = req.user.id; // Assuming user id is stored in req.user by the authMiddleware
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-
-    res.status(200).send(user);
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-    res.status(500).send({ message: "Internal server error" });
   }
 };
 

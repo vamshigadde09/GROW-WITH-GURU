@@ -5,26 +5,26 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
 
-//dotenv config
+// dotenv config
 dotenv.config();
 
-//mongodb connection
+// mongodb connection
 connectDB();
 
-//rest object
+// rest object
 const app = express();
 
-//middlewares
+// middlewares
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
-//routes
+// routes
 app.use("/api/v1/user", require("./routes/userRoutes"));
 app.use("/api/v1/students", require("./routes/studentRoutes"));
 app.use("/api/v1/teachers", require("./routes/TeacherRoutes"));
 
-//port
+// port
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(

@@ -1,78 +1,143 @@
-// ProfilePage.js
-import React from "react";
-import "../../styles/ProfilePage.css";
-import axios from "axios";
-import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import StudentHeader from "../Header/StudentHeader";
 import Footer from "../Footer/Footer";
-import Spinner from "../../components/Spinner";
-
-const fetchUserData = async (userId) => {
-  console.log(`Fetching user data for ${userId}`); // Debug log
-  const response = await axios.get(`/api/v1/students/${userId}`);
-  console.log("Fetched user data: ", response.data); // Debug log
-  return response.data;
-};
+import "../../styles/ApplyForInterview.css";
 
 const ProfilePage = () => {
-  const { userId } = useParams(); // Get userId from URL parameters
-  console.log("ProfilePage rendered with userId: ", userId); // Debug log
-  const {
-    data: userData,
-    isLoading,
-    error,
-  } = useQuery(
-    ["profile", userId], // Unique query key
-    () => fetchUserData(userId),
-    {
-      enabled: !!userId, // Only fetch data when userId is available
-      staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
-      onError: (error) => console.error("Error fetching user data:", error),
-    }
-  );
+  const [studentData, setStudentData] = useState(null);
+  const [error, setError] = useState(null);
 
-  if (isLoading) return <Spinner />;
-  if (error) return <div>Error: {error.message}</div>;
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Authentication required");
+        }
 
-  if (!userData) {
-    return (
-      <div>
-        <Spinner />
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          Unable to load user data. Please check your network connection and try
-          again.
-        </div>
-      </div>
-    );
+        const response = await fetch("/api/v1/students/profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setStudentData(data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchStudentData();
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
-  console.log("User data available: ", userData); // Debug log
+  if (!studentData) {
+    return <div>Loading...</div>;
+  }
+
+  const { personalDetails, professionalDetails, documents } = studentData;
 
   return (
     <div className="growwithguru-container">
       <StudentHeader />
-      <main className="body-box">
-        <section className="intro-section">
-          <h1>Welcome to GROW WITH GURU - Your Path to Interview Success</h1>
-        </section>
-        <section className="profile-details-section">
-          <div className="profile-details">
-            <div className="details-container">
-              <div className="personal-details">
-                <div className="profile-row">
-                  <div className="label">Name:</div>
-                  <div className="value">{userData.personalDetails.name}</div>
-                </div>
-                <div className="profile-row">
-                  <div className="label">Email:</div>
-                  <div className="value">{userData.personalDetails.email}</div>
-                </div>
+      <div className="form-container">
+        <h1>Welcome to GROW WITH GURU - Your Path to Interview Success</h1>
+        <div className="form-box profile-section">
+          <div className="profile-photo-placeholder">
+            {documents?.photo ? (
+              <img src={documents.photo} alt="Student" />
+            ) : (
+              <div>No Photo Available</div>
+            )}
+          </div>
+          <div className="profile-info-section">
+            {/* Personal Details */}
+            <div className="profile-info-group">
+              <label className="profile-label">Name:</label>
+              <div className="profile-value">
+                {personalDetails?.name || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Email ID:</label>
+              <div className="profile-value">
+                {personalDetails?.email || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Register No:</label>
+              <div className="profile-value">
+                {personalDetails?.registerNumber || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Department:</label>
+              <div className="profile-value">
+                {personalDetails?.department || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">College:</label>
+              <div className="profile-value">
+                {personalDetails?.college || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Program:</label>
+              <div className="profile-value">
+                {personalDetails?.program || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Specialization:</label>
+              <div className="profile-value">
+                {personalDetails?.specialization || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Education:</label>
+              <div className="profile-value">
+                {personalDetails?.education || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Section:</label>
+              <div className="profile-value">
+                {personalDetails?.section || "N/A"}
+              </div>
+            </div>
+            {/* Professional Details */}
+            <div className="profile-info-group">
+              <label className="profile-label">Skills:</label>
+              <div className="profile-value">
+                {professionalDetails?.skills || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Area of Interest:</label>
+              <div className="profile-value">
+                {professionalDetails?.areaOfInterest || "N/A"}
+              </div>
+            </div>
+            <div className="profile-info-group">
+              <label className="profile-label">Languages:</label>
+              <div className="profile-value">
+                {professionalDetails?.languages?.join(", ") || "N/A"}
               </div>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </div>
       <Footer />
     </div>
   );

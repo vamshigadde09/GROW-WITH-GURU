@@ -39,14 +39,47 @@ router.post(
   }
 );
 
-router.get("/", async (req, res) => {
+// Fetch student by ID
+router.get("/:id", async (req, res) => {
   try {
-    // Simulate fetching data from a database
-    const studentsData = await Student.find();
-    res.json(studentsData);
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).send({ message: "Student not found" });
+    }
+    res.json(student);
   } catch (error) {
-    console.error("Failed to fetch students", error);
-    res.status(500).send("Failed to fetch students");
+    res
+      .status(500)
+      .send({ message: "Failed to fetch student", error: error.message });
   }
 });
+
+// Route to update student details
+router.patch(
+  "/:id",
+  upload.fields([{ name: "photo" }, { name: "resume" }, { name: "cv" }]),
+  async (req, res) => {
+    try {
+      const updatedData = {
+        personalDetails: req.body.personalDetails,
+        professionalDetails: req.body.professionalDetails,
+        documents: {
+          photo: req.files.photo ? req.files.photo[0].path : "",
+          resume: req.files.resume ? req.files.resume[0].path : "",
+          cv: req.files.cv ? req.files.cv[0].path : "",
+        },
+      };
+
+      const student = await Student.findByIdAndUpdate(
+        req.params.id,
+        updatedData,
+        { new: true }
+      );
+      res.json(student);
+    } catch (error) {
+      handleErrors(error, res);
+    }
+  }
+);
+
 module.exports = router;

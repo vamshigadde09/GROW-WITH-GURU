@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  BrowserRouter as Router, // Correct import
+  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -66,7 +66,7 @@ function App() {
                   <StudentForm />
                 </ProtectedRoutes>
               }
-            />{" "}
+            />
             <Route
               path="/PersonalDetails/*"
               element={
@@ -92,7 +92,7 @@ function App() {
               }
             />
             <Route
-              path="/ProfilePage/*"
+              path="/profile/:userId"
               element={
                 <ProtectedRoutes>
                   <ProfilePage />
