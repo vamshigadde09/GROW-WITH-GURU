@@ -15,6 +15,7 @@ connectDB();
 const app = express();
 
 //middlewares
+<<<<<<< HEAD
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
@@ -23,6 +24,24 @@ app.use(cors());
 app.use("/api/v1/user", require("./routes/userRoutes"));
 app.use("/api/v1/students", require("./routes/studentRoutes"));
 app.use("/api/v1/teachers", require("./routes/TeacherRoutes"));
+=======
+app.use(morgan("dev"));
+app.use(express.json({ limit: "10mb" })); // Updated payload limit
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow requests from frontend
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
+
+//routes
+app.use("/api/v1/user", require("./routes/userRoutes"));
+app.use("/api/v1/interview", require("./routes/interviewRequestRoutes"));
+app.use("/api/v1/teacher", require("./routes/teacherRequestRoutes")); // Added teacher routes
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 
 //port
 const port = process.env.PORT || 8080;

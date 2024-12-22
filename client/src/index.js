@@ -7,16 +7,24 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { QueryClient, QueryClientProvider } from "react-query";
+<<<<<<< HEAD
 
+=======
+import { BrowserRouter } from "react-router-dom";
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
+<<<<<<< HEAD
       <React.StrictMode>
         <App />
       </React.StrictMode>
+=======
+      <App />
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
     </Provider>
   </QueryClientProvider>
 );

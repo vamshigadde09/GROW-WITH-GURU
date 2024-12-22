@@ -17,7 +17,14 @@ const HomePage = () => {
         }
       );
     } catch (error) {
+<<<<<<< HEAD
       console.log(error);
+=======
+      console.error("Error fetching user data:", error.message);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+      }
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
     }
   };
 

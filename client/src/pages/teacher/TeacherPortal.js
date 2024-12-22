@@ -1,6 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import "../../styles/StudentPortal.css";
+=======
+import "../../styles/teacherPortal.css";
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 import Footer from "../Footer/Footer";
 import TeacherHeader from "../Header/TeacherHeader";
 
@@ -55,11 +59,14 @@ const TeacherPortal = () => {
             </dd>
           </dl>
         </section>
+<<<<<<< HEAD
         <section className="contact-section">
           <h2>Contact Information:</h2>
           <p>Email: support@growwithguru.com</p>
           <p>Phone: 1-800-123-4567</p>
         </section>
+=======
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
       </div>
       <Footer />
     </div>

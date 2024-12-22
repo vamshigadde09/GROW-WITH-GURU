@@ -1,25 +1,53 @@
+<<<<<<< HEAD
 .footer {
     background-color: #003366; /* Dark blue footer */
     color: white; /* Text color */
     padding: 20px 0; /* Padding top and bottom */
+=======
+/* Ensure footer is always at the bottom */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.footer {
+    background-color: #003366;
+    color: white;
+    padding: 20px 0;
+    flex-shrink: 0; /* Prevent the footer from shrinking */
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 }
 
 /* Container for footer content */
 .footer-container {
+<<<<<<< HEAD
     display: flex; /* Flexbox layout */
     justify-content: space-around; /* Evenly spaced items */
     max-width: 800px; /* Maximum width */
     margin: auto; /* Centered margin */
+=======
+    display: flex;
+    justify-content: space-around;
+    max-width: 800px;
+    margin: auto;
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 }
 
 /* Styling for footer content headings */
 .footer-content h3 {
+<<<<<<< HEAD
     margin-bottom: 10px; /* Bottom margin */
+=======
+    margin-bottom: 10px;
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 }
 
 /* Styling for footer content text and lists */
 .footer-content p,
 .footer-content ul {
+<<<<<<< HEAD
     margin: 0; /* No margin */
 }
 
@@ -43,4 +71,25 @@
 /* Hover effect for footer content links */
 .footer-content a:hover {
     text-decoration: underline; /* Underline on hover */
+=======
+    margin: 0;
+}
+
+.footer-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-content li {
+    margin: 5px 0;
+}
+
+.footer-content a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 }

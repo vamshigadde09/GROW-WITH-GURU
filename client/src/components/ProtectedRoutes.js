@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./Spinner";
@@ -7,6 +8,15 @@ const ProtectedRoutes = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [formCompleted, setFormCompleted] = useState(false);
+=======
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import axios from "axios";
+import Spinner from "./Spinner";
+
+const ProtectedRoutes = () => {
+  const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
   const location = useLocation();
 
   useEffect(() => {
@@ -30,7 +40,10 @@ const ProtectedRoutes = ({ children }) => {
 
         if (res.data.success) {
           setAuthorized(true);
+<<<<<<< HEAD
           setFormCompleted(res.data.data.formfilled);
+=======
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
         } else {
           localStorage.removeItem("token");
         }
@@ -49,6 +62,7 @@ const ProtectedRoutes = ({ children }) => {
     return <Spinner />;
   }
 
+<<<<<<< HEAD
   if (!authorized) {
     return <Navigate to="/login" replace />;
   }
@@ -58,6 +72,9 @@ const ProtectedRoutes = ({ children }) => {
   }
 
   return children;
+=======
+  return <Outlet />;
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
 };
 
 export default ProtectedRoutes;

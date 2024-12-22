@@ -22,6 +22,7 @@ const StudentHeader = () => {
           <a href="/ApplyForInterview" className="nav-link">
             Schedule Interview
           </a>
+<<<<<<< HEAD
 
           <a href="/feedback" className="nav-link">
             Feedback
@@ -29,6 +30,15 @@ const StudentHeader = () => {
           <a href="/updates" className="nav-link">
             Updates
           </a>
+=======
+          <a href="/my-applications" className="nav-link">
+            My Applications{" "}
+          </a>
+          <a href="/feedback" className="nav-link">
+            Feedback
+          </a>
+
+>>>>>>> 8316b90 (Initial commit for GROW WITH GURU project)
           <a href="/ProfilePage" className="nav-link">
             Profile
           </a>
